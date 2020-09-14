@@ -16,17 +16,35 @@ unsigned long messageHeartbeat = 0;
 #define pin_g 10
 #define pin_b 9
 
-// 15BD04 green
-// 3AC205
-// 62C706
-// 8BCC06
-// B7D107
-// D6C807
-// DBA308
-// E07D08
-// E55509
-// EA2B0A
-// EF0A16 red
+#define STEPS 11
+
+word rpms[] = {
+  6000,
+  5500,
+  5000,
+  4500,
+  4000,
+  3500,
+  3000,
+  2500,
+  2000,
+  1500,
+  0
+};
+
+long colours[] = {
+  0xEF0A16, // red
+  0xEA2B0A,
+  0xE55509,
+  0xE07D08,
+  0xDBA308,
+  0xD6C807,
+  0xB7D107,
+  0x8BCC06,
+  0x62C706,
+  0x3AC205,
+  0x15BD04  // green
+};
 
 word rpm = 0x0000;
 
@@ -55,7 +73,7 @@ void loop() {
       if (canMsg.can_id == 0x201) {
         rpm = word(canMsg.data[0], canMsg.data[1]) / 4;
       }
-      setColour(rpm);
+      setColour();
       #ifdef DEBUG
       s.print("rpm: ");
       s.println(rpm);
@@ -80,16 +98,19 @@ void loop() {
   }
 }
 
-void setColour(word rpm) {
-  // TODO: fade colour?
-  if (rpm < 5000) {
-    rgbColour(0, 255, 0); // green
-  } else {
-    rgbColour(255, 0, 0); // red
+void setColour() {
+  for (int i = 0; i < STEPS; i++) {
+    if (rpm >= rpms[i]) {
+      rgbColour(colours[i]);
+      break;
+    }
   }
 }
 
-void rgbColour(int r, int g, int b) {
+void rgbColour(long colour) {
+  int r = (colour >> 16) & 0xFF;
+  int g = (colour >> 8) & 0xFF;
+  int b = (colour >> 0) & 0xFF;
   analogWrite(pin_r, r);
   analogWrite(pin_g, g);
   analogWrite(pin_b, b);
