@@ -7,14 +7,15 @@
 HardwareSerial &s = Serial;
 #endif
 
+#define pin_r 3
+#define pin_g 5
+#define pin_b 6
+#define pin_can 10
+
 struct can_frame canMsg;
-MCP2515 mcp2515(10);
+MCP2515 mcp2515(pin_can);
 unsigned long messageHeartbeat = 0;
 #define NO_MESSAGE_HEARTBEAT 1000
-
-#define pin_r 11
-#define pin_g 10
-#define pin_b 9
 
 #define STEPS 11
 
