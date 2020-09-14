@@ -102,6 +102,10 @@ void setColour() {
   for (int i = 0; i < STEPS; i++) {
     if (rpm >= rpms[i]) {
       rgbColour(colours[i]);
+      #ifdef DEBUG
+      s.print("colour: ");
+      s.println(colours[i], HEX);
+      #endif
       break;
     }
   }
