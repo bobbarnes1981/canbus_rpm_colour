@@ -16,6 +16,18 @@ unsigned long messageHeartbeat = 0;
 #define pin_g 10
 #define pin_b 9
 
+// 15BD04 green
+// 3AC205
+// 62C706
+// 8BCC06
+// B7D107
+// D6C807
+// DBA308
+// E07D08
+// E55509
+// EA2B0A
+// EF0A16 red
+
 word rpm = 0x0000;
 
 void setup() {
