@@ -3,14 +3,14 @@
 
 #define DEBUG
 
-#define CYCLE
+//#define CYCLE
 
 #ifdef DEBUG
 HardwareSerial &s = Serial;
 #endif
 
 #define pin_r 3
-#define pin_g 5
+#define pin_g 9
 #define pin_b 6
 #define pin_can 10
 
