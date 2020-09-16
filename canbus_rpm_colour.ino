@@ -3,6 +3,8 @@
 
 #define DEBUG
 
+#define CYCLE
+
 #ifdef DEBUG
 HardwareSerial &s = Serial;
 #endif
@@ -17,9 +19,10 @@ MCP2515 mcp2515(pin_can);
 unsigned long messageHeartbeat = 0;
 #define NO_MESSAGE_HEARTBEAT 1000
 
-#define STEPS 11
+#define STEPS 14
 
 word rpms[] = {
+  6500,
   6000,
   5500,
   5000,
@@ -30,26 +33,31 @@ word rpms[] = {
   2500,
   2000,
   1500,
+  1000,
+  500,
   0
 };
 
 long colours[] = {
-  0xEF0A16, // red
-  0xEA2B0A,
-  0xE55509,
-  0xE07D08,
-  0xDBA308,
-  0xD6C807,
-  0xB7D107,
-  0x8BCC06,
-  0x62C706,
-  0x3AC205,
-  0x15BD04  // green
+  0xFF0000, // red
+  0xFF2700,
+  0xFF4E00,
+  0xFF7500,
+  0xFF9C00,
+  0xFFC400,
+  0xFFEB00,
+  0xEBFF00,
+  0xC4FF00,
+  0x9CFF00,
+  0x75FF00,
+  0x4EFF00,
+  0x27FF00,
+  0x00FF00  // green
 };
 
 word rpm = 0x0000;
 
-void setup() {
+void setup() {  
   pinMode(pin_r, OUTPUT);
   pinMode(pin_g, OUTPUT);
   pinMode(pin_b, OUTPUT);
@@ -62,9 +70,30 @@ void setup() {
   s.begin(115200);
   s.println("started");
   #endif
+
+  rgbColour(0xFF0000);
+  delay(2000);
+  rgbColour(0x00FF00);
+  delay(2000);
+  rgbColour(0x0000FF);
+  delay(2000);
 }
 
 void loop() {
+  #ifdef CYCLE
+  
+  rpm+=500;
+  if (rpm > 7000) {
+    rpm = 0;
+  }
+  #ifdef DEBUG
+  s.println(rpm);
+  #endif
+  setColour();
+  delay(1000);
+
+  #else
+  
   MCP2515::ERROR error = mcp2515.readMessage(&canMsg);
   switch(error) {
     case MCP2515::ERROR_OK:
@@ -97,6 +126,8 @@ void loop() {
      s.println("no messages");
      #endif
   }
+
+  #endif
 }
 
 void setColour() {
