@@ -72,25 +72,23 @@ void setup() {
   #endif
 
   rgbColour(0xFF0000);
-  delay(2000);
+  delay(500);
   rgbColour(0x00FF00);
-  delay(2000);
+  delay(500);
   rgbColour(0x0000FF);
-  delay(2000);
+  delay(500);
 }
 
 void loop() {
   #ifdef CYCLE
   
-  rpm+=500;
+  rpm+=10;
   if (rpm > 7000) {
     rpm = 0;
   }
   #ifdef DEBUG
   s.println(rpm);
   #endif
-  setColour();
-  delay(1000);
 
   #else
   
@@ -103,7 +101,6 @@ void loop() {
       if (canMsg.can_id == 0x201) {
         rpm = word(canMsg.data[0], canMsg.data[1]) / 4;
       }
-      setColour();
       #ifdef DEBUG
       s.print("rpm: ");
       s.println(rpm);
@@ -128,17 +125,26 @@ void loop() {
   }
 
   #endif
+  
+  setColour();
 }
 
 void setColour() {
   for (int i = 0; i < STEPS; i++) {
-    if (rpm >= rpms[i]) {
+    if (rpm > rpms[i]) {
       rgbColour(colours[i]);
       #ifdef DEBUG
       s.print("colour: ");
       s.println(colours[i], HEX);
       #endif
       break;
+    }
+  }
+  if (rpm == 0) {
+    if ((millis() % 500) < 250) {
+      rgbColour(0x000000);
+    } else {
+      rgbColour(0xFF00FF);
     }
   }
 }
